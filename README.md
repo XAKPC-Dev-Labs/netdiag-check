@@ -17,7 +17,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check endpoint health
-  uses: xakpc/netdiag-check@v1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
   with:
     target: example.com
 ```
@@ -26,7 +26,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check endpoint health
-  uses: xakpc/netdiag-check@v1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
   with:
     target: example.com
     api-key: ${{ secrets.NETDIAG_API_KEY }}
@@ -36,7 +36,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check from US and EU
-  uses: xakpc/netdiag-check@v1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
   with:
     target: example.com
     regions: us-west,eu-central
@@ -47,7 +47,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 ```yaml
 - name: Check endpoint health
   id: health
-  uses: xakpc/netdiag-check@v1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
   with:
     target: example.com
 
@@ -80,7 +80,7 @@ jobs:
         run: sleep 30
 
       - name: Check endpoint health
-        uses: xakpc/netdiag-check@v1
+        uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
         with:
           target: example.com
           api-key: ${{ secrets.NETDIAG_API_KEY }}
