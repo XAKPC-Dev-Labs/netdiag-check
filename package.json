@@ -1,0 +1,37 @@
+{
+  "name": "netdiag-check-action",
+  "version": "1.0.0",
+  "description": "GitHub Action for running multi-region network diagnostics via NetDiag API",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "format": "prettier --write src/**/*.ts",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "github-action",
+    "network",
+    "diagnostics",
+    "health-check",
+    "post-deploy"
+  ],
+  "author": "XAKPC Dev Labs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xakpc/netdiag-check"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@netdiag/client": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vercel/ncc": "^0.38.3",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,40 @@
+name: 'NetDiag Health Check'
+description: 'Run multi-region network diagnostics (DNS, TLS, HTTP, Ping) to verify endpoint health after deployment'
+author: 'xakpc'
+
+branding:
+  icon: 'activity'
+  color: 'green'
+
+inputs:
+  target:
+    description: 'Target hostname or URL to check (e.g., example.com or https://api.myservice.com)'
+    required: true
+  api-key:
+    description: 'NetDiag API key for higher rate limits (optional, get one at https://netdiag.dev)'
+    required: false
+  regions:
+    description: 'Comma-separated region codes to check from (us-west, eu-central, ap-southeast). Default: all regions'
+    required: false
+  port:
+    description: 'TCP port for TLS/HTTP checks (80, 443, 8080, 8443). Default: 443'
+    required: false
+    default: '443'
+  timeout:
+    description: 'Request timeout in seconds. Default: 30'
+    required: false
+    default: '30'
+
+outputs:
+  status:
+    description: 'Overall health status: Healthy, Warning, or Unhealthy'
+  quorum:
+    description: 'Healthy regions count (e.g., "3/3" means all 3 regions report healthy)'
+  dns-propagation:
+    description: 'DNS propagation status: consistent (same IPs across regions) or mismatched'
+  json:
+    description: 'Full JSON response for custom processing in subsequent steps'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
