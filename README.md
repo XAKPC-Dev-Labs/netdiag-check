@@ -134,3 +134,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [NetDiag Website](https://netdiag.dev)
 - [API Documentation](https://netdiag.dev/docs)
 - [Report Issues](https://github.com/xakpc/netdiag-check/issues)
+- [Terms of Service](https://netdiag.dev/terms/)
+- [Privacy Policy](https://netdiag.dev/privacy/)
