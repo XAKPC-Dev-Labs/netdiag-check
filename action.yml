@@ -1,6 +1,6 @@
 name: 'NetDiag Health Check'
 description: 'Run multi-region network diagnostics (DNS, TLS, HTTP, Ping) to verify endpoint health after deployment'
-author: 'xakpc'
+author: '@xakpc'
 
 branding:
   icon: 'activity'
