@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@netdiag/client": "^1.0.0"
+    "@netdiag/client": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

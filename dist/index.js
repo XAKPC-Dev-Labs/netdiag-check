@@ -3284,10 +3284,10 @@ var NetDiagClient = class {
       );
     }
   }
-  async check(targetOrRequest) {
-    const request = typeof targetOrRequest === "string" ? { target: targetOrRequest } : targetOrRequest;
-    if (!request.target) {
-      throw new NetDiagError("target is required");
+  async check(hostOrRequest) {
+    const request = typeof hostOrRequest === "string" ? { host: hostOrRequest } : hostOrRequest;
+    if (!request.host) {
+      throw new NetDiagError("host is required");
     }
     const normalizedRequest = this.normalizeRequest(request);
     const url = this.buildUrl(normalizedRequest);
@@ -3298,10 +3298,10 @@ var NetDiagClient = class {
     const data = await response.json();
     return data;
   }
-  async checkPrometheus(targetOrRequest) {
-    const request = typeof targetOrRequest === "string" ? { target: targetOrRequest } : targetOrRequest;
-    if (!request.target) {
-      throw new NetDiagError("target is required");
+  async checkPrometheus(hostOrRequest) {
+    const request = typeof hostOrRequest === "string" ? { host: hostOrRequest } : hostOrRequest;
+    if (!request.host) {
+      throw new NetDiagError("host is required");
     }
     const normalizedRequest = this.normalizeRequest(request);
     const url = this.buildUrl(normalizedRequest, "prometheus");
@@ -3312,26 +3312,26 @@ var NetDiagClient = class {
     return response.text();
   }
   /**
-   * Checks if a target is healthy.
+   * Checks if a host is healthy.
    *
-   * @param target - Target hostname, IP address, or URL to check
-   * @returns true if the target status is 'Healthy', false otherwise
+   * @param host - Target hostname, IP address, or URL to check
+   * @returns true if the host status is 'Healthy', false otherwise
    *
    * @example
    * ```typescript
    * if (await client.isHealthy('example.com')) {
-   *   console.log('Target is healthy!');
+   *   console.log('Host is healthy!');
    * }
    * ```
    */
-  async isHealthy(target) {
-    const response = await this.check(target);
+  async isHealthy(host) {
+    const response = await this.check(host);
     return response.status === "Healthy";
   }
   /**
-   * Gets the health status of a target.
+   * Gets the health status of a host.
    *
-   * @param target - Target hostname, IP address, or URL to check
+   * @param host - Target hostname, IP address, or URL to check
    * @returns The health status: 'Healthy', 'Warning', or 'Unhealthy'
    *
    * @example
@@ -3340,22 +3340,22 @@ var NetDiagClient = class {
    * console.log(`Status: ${status}`);
    * ```
    */
-  async getStatus(target) {
-    const response = await this.check(target);
+  async getStatus(host) {
+    const response = await this.check(host);
     return response.status;
   }
   /**
-   * Normalizes a target string by extracting the host from a URL if needed.
+   * Normalizes a host string by extracting the hostname from a URL if needed.
    */
-  normalizeTarget(target) {
+  normalizeHost(host) {
     try {
-      const url = new URL(target);
+      const url = new URL(host);
       if (url.protocol === "http:" || url.protocol === "https:") {
         return url.hostname;
       }
     } catch {
     }
-    let normalized = target;
+    let normalized = host;
     if (normalized.startsWith("https://")) {
       normalized = normalized.slice(8);
     } else if (normalized.startsWith("http://")) {
@@ -3368,21 +3368,21 @@ var NetDiagClient = class {
     return normalized;
   }
   /**
-   * Creates a normalized request with the target hostname extracted.
+   * Creates a normalized request with the host hostname extracted.
    */
   normalizeRequest(request) {
-    const normalizedTarget = this.normalizeTarget(request.target);
-    if (normalizedTarget === request.target) {
+    const normalizedHost = this.normalizeHost(request.host);
+    if (normalizedHost === request.host) {
       return request;
     }
-    return { ...request, target: normalizedTarget };
+    return { ...request, host: normalizedHost };
   }
   /**
    * Builds the API URL with query parameters.
    */
   buildUrl(request, format) {
     const params = new URLSearchParams();
-    params.set("target", request.target);
+    params.set("host", request.host);
     if (request.port !== void 0) {
       params.set("port", String(request.port));
     }
@@ -25965,56 +25965,61 @@ async function run() {
         });
         // Run diagnostics
         const response = await client.check({
-            target,
+            host: target,
             port,
             regions,
         });
         // Log results
         core.info('');
         core.info('=== NetDiag Health Check Results ===');
-        core.info(`Target: ${response.target}`);
+        core.info(`Target: ${response.host}`);
         core.info(`Status: ${response.status}`);
-        core.info(`Quorum: ${response.quorum}`);
-        core.info(`DNS Propagation: ${response.dnsPropagationStatus}`);
+        core.info(`Quorum: ${response.quorum.required}/${response.quorum.total} (met: ${response.quorum.met})`);
         core.info('');
         // Log per-region results
-        for (const location of response.locations) {
+        for (const location of response.regions) {
             const icon = location.status === 'Healthy' ? '✓' : location.status === 'Warning' ? '⚠' : '✗';
             core.info(`${icon} ${location.region}: ${location.status}`);
             if (location.ping) {
-                const pingMsg = location.ping.latencyMs
-                    ? `${location.ping.latencyMs.toFixed(1)}ms`
-                    : location.ping.message;
+                const pingMsg = location.ping.avgRttMs
+                    ? `${location.ping.avgRttMs.toFixed(1)}ms`
+                    : location.ping.error?.message ?? 'No response';
                 core.info(`  Ping: ${pingMsg}`);
             }
             if (location.dns) {
-                core.info(`  DNS: ${location.dns.message}`);
+                const dnsMsg = location.dns.resolvedAddresses.length > 0
+                    ? `Resolved ${location.dns.resolvedAddresses.length} address(es)`
+                    : location.dns.error?.message ?? 'No addresses';
+                core.info(`  DNS: ${dnsMsg}`);
             }
             if (location.tls) {
                 const tlsMsg = location.tls.daysUntilExpiry
                     ? `Valid (${location.tls.daysUntilExpiry} days until expiry)`
-                    : location.tls.message;
+                    : location.tls.error?.message ?? 'Invalid certificate';
                 core.info(`  TLS: ${tlsMsg}`);
             }
             if (location.http) {
-                core.info(`  HTTP: ${location.http.message}`);
+                const httpMsg = location.http.statusCode
+                    ? `${location.http.statusCode} (${location.http.totalTimeMs}ms)`
+                    : location.http.error?.message ?? 'Request failed';
+                core.info(`  HTTP: ${httpMsg}`);
             }
         }
         core.info('');
         // Set outputs
         core.setOutput('status', response.status);
-        core.setOutput('quorum', response.quorum);
-        core.setOutput('dns-propagation', response.dnsPropagationStatus);
+        core.setOutput('quorum', `${response.quorum.required}/${response.quorum.total}`);
+        core.setOutput('quorum-met', response.quorum.met);
         core.setOutput('json', JSON.stringify(response));
         // Fail if unhealthy
         if (response.status === 'Unhealthy') {
-            core.setFailed(`Health check failed: ${response.target} is Unhealthy (${response.quorum} regions healthy)`);
+            core.setFailed(`Health check failed: ${response.host} is Unhealthy (${response.quorum.required}/${response.quorum.total} regions healthy)`);
         }
         else if (response.status === 'Warning') {
-            core.warning(`Health check warning: ${response.target} has warnings but is operational`);
+            core.warning(`Health check warning: ${response.host} has warnings but is operational`);
         }
         else {
-            core.info(`Health check passed: ${response.target} is Healthy`);
+            core.info(`Health check passed: ${response.host} is Healthy`);
         }
     }
     catch (error) {

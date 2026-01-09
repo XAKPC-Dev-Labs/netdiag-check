@@ -29,9 +29,9 @@ outputs:
   status:
     description: 'Overall health status: Healthy, Warning, or Unhealthy'
   quorum:
-    description: 'Healthy regions count (e.g., "3/3" means all 3 regions report healthy)'
-  dns-propagation:
-    description: 'DNS propagation status: consistent (same IPs across regions) or mismatched'
+    description: 'Healthy regions count (e.g., "2/3" means 2 of 3 regions report healthy)'
+  quorum-met:
+    description: 'Whether the required quorum was achieved (true/false)'
   json:
     description: 'Full JSON response for custom processing in subsequent steps'
 

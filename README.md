@@ -17,7 +17,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check endpoint health
-  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
     target: example.com
 ```
@@ -26,7 +26,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check endpoint health
-  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
     target: example.com
     api-key: ${{ secrets.NETDIAG_API_KEY }}
@@ -36,7 +36,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 
 ```yaml
 - name: Check from US and EU
-  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
     target: example.com
     regions: us-west,eu-central
@@ -47,7 +47,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 ```yaml
 - name: Check endpoint health
   id: health
-  uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
+  uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
     target: example.com
 
@@ -55,7 +55,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
   run: |
     echo "Status: ${{ steps.health.outputs.status }}"
     echo "Quorum: ${{ steps.health.outputs.quorum }}"
-    echo "DNS: ${{ steps.health.outputs.dns-propagation }}"
+    echo "Quorum Met: ${{ steps.health.outputs.quorum-met }}"
 ```
 
 ### Post-Deploy Verification Workflow
@@ -80,7 +80,7 @@ jobs:
         run: sleep 30
 
       - name: Check endpoint health
-        uses: XAKPC-Dev-Labs/netdiag-check@v1.0.1
+        uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
         with:
           target: example.com
           api-key: ${{ secrets.NETDIAG_API_KEY }}
@@ -101,8 +101,8 @@ jobs:
 | Output | Description | Example |
 |--------|-------------|---------|
 | `status` | Overall health status | `Healthy`, `Warning`, or `Unhealthy` |
-| `quorum` | Healthy regions count | `3/3` |
-| `dns-propagation` | DNS consistency across regions | `consistent` or `mismatched` |
+| `quorum` | Healthy regions count | `2/3` |
+| `quorum-met` | Whether required quorum was achieved | `true` or `false` |
 | `json` | Full JSON response for custom processing | `{"runId":"...","status":"Healthy",...}` |
 
 ## Status Values
