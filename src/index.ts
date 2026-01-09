@@ -4,7 +4,7 @@ import { NetDiagClient, type CheckResponse } from '@netdiag/client';
 async function run(): Promise<void> {
   try {
     // Get inputs
-    const target = core.getInput('target', { required: true });
+    const target = core.getInput('host', { required: true });
     const apiKey = core.getInput('api-key') || undefined;
     const regions = core.getInput('regions') || undefined;
     const port = parseInt(core.getInput('port') || '443', 10);
