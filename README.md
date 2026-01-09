@@ -19,7 +19,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 - name: Check endpoint health
   uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
-    target: example.com
+    host: example.com
 ```
 
 ### With API Key (Higher Rate Limits)
@@ -28,7 +28,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 - name: Check endpoint health
   uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
-    target: example.com
+    host: example.com
     api-key: ${{ secrets.NETDIAG_API_KEY }}
 ```
 
@@ -38,7 +38,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
 - name: Check from US and EU
   uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
-    target: example.com
+    host: example.com
     regions: us-west,eu-central
 ```
 
@@ -49,7 +49,7 @@ This GitHub Action uses the [NetDiag API](https://netdiag.dev) to run comprehens
   id: health
   uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
   with:
-    target: example.com
+    host: example.com
 
 - name: Show results
   run: |
@@ -82,7 +82,7 @@ jobs:
       - name: Check endpoint health
         uses: XAKPC-Dev-Labs/netdiag-check@v1.1.0
         with:
-          target: example.com
+          host: example.com
           api-key: ${{ secrets.NETDIAG_API_KEY }}
 ```
 
@@ -90,7 +90,7 @@ jobs:
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `target` | Target hostname or URL to check (e.g., `example.com`) | Yes | - |
+| `host` | Target hostname or URL to check (e.g., `example.com`) | Yes | - |
 | `api-key` | NetDiag API key for higher rate limits ([get one](https://netdiag.dev)) | No | - |
 | `regions` | Comma-separated region codes: `us-west`, `eu-central`, `ap-southeast` | No | All regions |
 | `port` | TCP port for TLS/HTTP checks (80, 443, 8080, 8443) | No | `443` |
