@@ -7,7 +7,7 @@ branding:
   color: 'green'
 
 inputs:
-  target:
+  host:
     description: 'Target hostname or URL to check (e.g., example.com or https://api.myservice.com)'
     required: true
   api-key:
